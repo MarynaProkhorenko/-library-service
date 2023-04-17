@@ -3,7 +3,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 
 from borrowing_service.models import Borrowing
-from borrowing_service.serializers import BorrowingSerializer, BorrowingListSerializer, BorrowingDetailSerializer
+from borrowing_service.serializers import (
+    BorrowingSerializer,
+    BorrowingListSerializer,
+    BorrowingDetailSerializer, BorrowingCreateSerializer,
+)
 from rest_framework import serializers
 
 
@@ -32,6 +36,9 @@ class BorrowingViewSet(
 
         if self.action == "retrieve":
             return BorrowingDetailSerializer
+
+        if self.action == "create":
+            return BorrowingCreateSerializer
 
         return BorrowingSerializer
 
