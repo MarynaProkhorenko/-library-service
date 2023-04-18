@@ -67,3 +67,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         return book
 
 
+class BorrowingReturnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Borrowing
+        fields = ("actual_return_date",)

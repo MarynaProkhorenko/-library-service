@@ -1,6 +1,9 @@
-from rest_framework import viewsets, mixins
+from django.db import transaction
+from rest_framework import viewsets, mixins, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from borrowing_service.models import Borrowing
 from borrowing_service.serializers import (
@@ -62,3 +65,32 @@ class BorrowingViewSet(
 
     def perform_create(self, serializer) -> None:
         serializer.save(user=self.request.user)
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="return-book",
+        permission_classes=[IsAuthenticated],
+    )
+    def return_book(self, request, pk=None):
+        borrowing = self.get_object()
+        book = borrowing.book
+        serializer = self.get_serializer(borrowing, data=request.data)
+
+        if borrowing.actual_return_date is not None:
+            raise ValidationError("This book has been already returned")
+
+        if serializer.is_valid():
+            Borrowing.validated_date(
+                borrowing.borrow_date,
+                borrowing.expected_return_date,
+                serializer.validated_data["actual_return_date"],
+                ValidationError,
+            )
+            with transaction.atomic():
+                serializer.save()
+                book.inventory += 1
+                book.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
