@@ -22,7 +22,7 @@ class BorrowingViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
-    queryset = Borrowing.objects.all()
+    queryset = Borrowing.objects.select_related("book")
     serializer_class = BorrowingSerializer
     pagination_class = BorrowingPagination
     permission_classes = (IsAuthenticated,)
