@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from book_service.models import Book
 from book_service.serializers import BookSerializer
 from borrowing_service.models import Borrowing
+from borrowing_service.notifications_bot import send_message
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -48,6 +49,13 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
             borrowing = Borrowing.objects.create(**validated_data)
             book.inventory -= 1
             book.save()
+            message = (
+                f"New borrowing created at {borrowing.borrow_date}\n"
+                f"Book: {book.title}( {book.author})\n"
+                f"Expected return date: {borrowing.expected_return_date}\n"
+                f"User: {borrowing.user}"
+            )
+            send_message(message)
 
             return borrowing
 
