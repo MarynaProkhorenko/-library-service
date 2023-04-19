@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Borrowings
+from .models import Borrowing
 
 
-@admin.register(Borrowings)
-class BorrowingsAdmin(admin.ModelAdmin):
+@admin.register(Borrowing)
+class BorrowingAdmin(admin.ModelAdmin):
     list_display = [
         "borrow_date",
         "expected_return_date",
