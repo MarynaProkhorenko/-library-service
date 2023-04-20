@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework_simplejwt",
     "rest_framework",
     "drf_spectacular",
     "borrowing_service",
@@ -132,23 +133,17 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",
-        "rest_framework.throttling.UserRateThrottle"
+        "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "10/minute",
-        "user": "30/minute"
-    },
+    "DEFAULT_THROTTLE_RATES": {"anon": "10/minute", "user": "30/minute"},
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
-
+    ),
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": False,
-
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZE",
 }
-

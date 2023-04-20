@@ -6,29 +6,17 @@ from book_service.models import Book
 
 
 class Borrowing(models.Model):
-    borrow_date = models.DateField(auto_now_add=True)
+    borrow_date = models.DateField(auto_now_add=False)
     expected_return_date = models.DateField(auto_now_add=False)
-    actual_return_date = models.DateTimeField(
-        auto_now_add=False,
-        blank=True, null=True
-    )
-    book = models.ForeignKey(
-        Book,
-        on_delete=models.CASCADE,
-        related_name="borrowings"
-    )
+    actual_return_date = models.DateField(auto_now_add=False, blank=True, null=True)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="borrowings")
     user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name="borrowings"
+        get_user_model(), on_delete=models.CASCADE, related_name="borrowings"
     )
 
     @staticmethod
     def validated_date(
-            borrow_date,
-            expected_return_date,
-            actual_return_date,
-            error_to_raise
+        borrow_date, expected_return_date, actual_return_date, error_to_raise
     ):
         if borrow_date > expected_return_date:
             raise error_to_raise(
@@ -56,6 +44,4 @@ class Borrowing(models.Model):
         ordering = ["borrow_date"]
 
     def __str__(self):
-        return (
-            f"{self.user} borrow {self.book} at {self.borrow_date}"
-        )
+        return f"{self.user} borrow {self.book} at {self.borrow_date}"

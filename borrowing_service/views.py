@@ -10,7 +10,9 @@ from borrowing_service.models import Borrowing
 from borrowing_service.serializers import (
     BorrowingSerializer,
     BorrowingListSerializer,
-    BorrowingDetailSerializer, BorrowingCreateSerializer,
+    BorrowingDetailSerializer,
+    BorrowingCreateSerializer,
+    BorrowingReturnSerializer,
 )
 from rest_framework import serializers
 
@@ -61,6 +63,9 @@ class BorrowingViewSet(
 
         if self.action == "create":
             return BorrowingCreateSerializer
+
+        if self.action == "return_book":
+            return BorrowingReturnSerializer
 
         return BorrowingSerializer
 

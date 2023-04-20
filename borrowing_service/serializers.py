@@ -21,14 +21,35 @@ class BorrowingSerializer(serializers.ModelSerializer):
         )
 
 
-class BorrowingListSerializer(BorrowingSerializer):
+class BorrowingListSerializer(serializers.ModelSerializer):
     book = serializers.StringRelatedField(many=False, read_only=True)
     user = serializers.StringRelatedField(many=False, read_only=True)
 
+    class Meta:
+        model = Borrowing
+        fields = (
+            "id",
+            "borrow_date",
+            "expected_return_date",
+            "actual_return_date",
+            "book",
+            "user",
+        )
 
-class BorrowingDetailSerializer(BorrowingSerializer):
+
+class BorrowingDetailSerializer(serializers.ModelSerializer):
     book = BookSerializer(many=False, read_only=True)
-    user = serializers.CharField(source="user", read_only=True)
+
+    class Meta:
+        model = Borrowing
+        fields = (
+            "id",
+            "borrow_date",
+            "expected_return_date",
+            "actual_return_date",
+            "book",
+            "user",
+        )
 
 
 class BorrowingCreateSerializer(serializers.ModelSerializer):
@@ -40,7 +61,6 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
-            "user",
         )
 
     def create(self, validated_data):
@@ -62,10 +82,10 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super().validate(attrs=attrs)
         Borrowing.validated_date(
-            attrs["borrow_date"],
-            attrs["expected_return_date"],
-            attrs["actual_return_date"],
-            ValidationError
+            attrs.get("borrow_date"),
+            attrs.get("expected_return_date"),
+            attrs.get("actual_return_date"),
+            ValidationError,
         )
         return data
 
